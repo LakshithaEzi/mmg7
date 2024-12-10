@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose"); // Ensure you have mongoose imported
 
 const connectDB = require("./Database");
+const userRoutes = require("./routes/userRoutes");
+
 
 
 // Load environment variables
@@ -19,7 +21,9 @@ app.use(express.json());
 connectDB()
   .then(() => {
     // Middleware for routes after successful DB connection
- 
+    app.use("/api/users", userRoutes);
+
+
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
