@@ -2,13 +2,10 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const mongoose = require("mongoose"); // Ensure you have mongoose imported
-
+const DoctorRoutes = require("./routes/DoctorRoutes");
 const connectDB = require("./Database");
 const userRoutes = require("./routes/userRoutes");
 
-
-
-// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -22,7 +19,7 @@ connectDB()
   .then(() => {
     // Middleware for routes after successful DB connection
     app.use("/api/users", userRoutes);
-
+    app.use("/api/prescriptions", DoctorRoutes);
 
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
