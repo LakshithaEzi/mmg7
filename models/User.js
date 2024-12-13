@@ -5,6 +5,8 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   userId: { type: String, required: true, unique: true },
   phoneNumber: { type: String, required: true },
+  nic: { type: String, required: true },
+  userRole: { type: String, enum: ["patient", "doctor", "pharmacist"], required: true },
   password: { type: String, required: true },
 });
 

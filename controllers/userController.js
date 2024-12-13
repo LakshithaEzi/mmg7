@@ -2,10 +2,11 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("./../models/User");
 
+//register new user
 exports.registerUser = async (req, res) => {
-  const { firstName, lastName, userId, phoneNumber, password } = req.body;
+  const { firstName, lastName, userId, nic, userRole, phoneNumber, password } = req.body;
 
-  if (!firstName || !lastName || !userId || !phoneNumber || !password) {
+  if (!firstName || !lastName || !userId || !phoneNumber || !nic || !userRole || !password) {
     return res
       .status(400)
       .json({ success: false, message: "Please fill all required fields." });
@@ -28,6 +29,8 @@ exports.registerUser = async (req, res) => {
       lastName,
       userId,
       phoneNumber,
+      nic,
+      userRole,
       password: hashedPassword,
     });
 
@@ -41,6 +44,8 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+
+//login user
 exports.loginUser = async (req, res) => {
   const { userId, password } = req.body;
 
