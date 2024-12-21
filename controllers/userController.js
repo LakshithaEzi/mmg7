@@ -3,9 +3,9 @@ const crypto = require("crypto");
 const User = require("./../models/User");
 
 exports.registerUser = async (req, res) => {
-  const { firstName, lastName, userId, phoneNumber, password } = req.body;
+  const { firstName, lastName, userId, phoneNumber, password , role} = req.body;
 
-  if (!firstName || !lastName || !userId || !phoneNumber || !password) {
+  if (!firstName || !lastName || !userId || !phoneNumber || !password || !role ) {
     return res
       .status(400)
       .json({ success: false, message: "Please fill all required fields." });
@@ -28,6 +28,7 @@ exports.registerUser = async (req, res) => {
       lastName,
       userId,
       phoneNumber,
+      role,
       password: hashedPassword,
     });
 
@@ -89,6 +90,40 @@ exports.loginUser = async (req, res) => {
     res.status(200).json({ success: true, token });
   } catch (err) {
     console.error("Error in loginUser:", err.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+exports.getDoctorHomeData = async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide userId." });
+  }
+
+  try {
+    const user = await User.findOne({ userId, role: 'doctor' });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Doctor not found." });
+    }
+
+    // Fetch additional data as needed for the doctor's home
+    // For example, appointments, patient list, etc.
+    const appointments = await Appointment.find({ doctorId: user._id });
+    const patients = await Patient.find({ doctorId: user._id });
+
+    res.status(200).json({ 
+      success: true, 
+      doctor: user,
+      appointments,
+      patients
+    });
+  } catch (err) {
+    console.error("Error in getDoctorHomeData:", err.message);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
